@@ -1,16 +1,343 @@
-   <!DOCTYPE html>
-   <html>
-   <head>
-     <meta charset="utf-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1">
-     <title>Assignment Tracker</title>
-     <style>
-       body { font-family: sans-serif; margin: 0; padding: 1rem; }
-       iframe { width: 100%; height: 85vh; border: 0; }
-     </style>
-   </head>
-   <body>
-     <h1>Assignment Tracker</h1>
-     <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS-pz-6lcIe7CVET7Qzv1OLBaUAbPY_7UJ3f8UFnJGHcVkHme7zOGAn6_f9tdS9_6YB9chbdWzmYRan/pubhtml"></iframe>
-   </body>
-   </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignment Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff8f6;
+    --card: #ffffff;
+    --ink: #4a3b40;
+    --muted: #9a8a8f;
+    --rose: #f4a7b9;
+    --rose-deep: #e07a96;
+    --blush: #fde4ea;
+    --lilac: #e9defa;
+    --sage: #dcefe3;
+    --sage-ink: #4f8a69;
+    --butter: #fff1cf;
+    --butter-ink: #a07a1c;
+    --shadow: 0 8px 24px rgba(224, 122, 150, .12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 10% 0%, #fde4ea 0, transparent 40%),
+      radial-gradient(circle at 90% 10%, #e9defa 0, transparent 35%),
+      var(--bg);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 18px 80px; }
+
+  header { text-align: center; margin-bottom: 28px; }
+  .eyebrow { letter-spacing: .25em; text-transform: uppercase; font-size: 12px; color: var(--rose-deep); font-weight: 600; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(34px, 6vw, 52px); margin: 8px 0 6px; font-weight: 600; }
+  h1 em { color: var(--rose-deep); font-weight: 500; }
+  .sub { color: var(--muted); margin: 0; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 26px 0 18px; }
+  .stat { background: var(--card); border-radius: 20px; padding: 16px; text-align: center; box-shadow: var(--shadow); }
+  .stat b { display: block; font-size: 28px; font-family: 'Playfair Display', serif; color: var(--rose-deep); }
+  .stat span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+
+  .progress { background: var(--card); border-radius: 20px; padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 22px; }
+  .progress-top { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+  .bar { height: 12px; background: var(--blush); border-radius: 99px; overflow: hidden; }
+  .fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--rose), var(--rose-deep)); border-radius: 99px; transition: width .6s ease; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .search { flex: 1 1 200px; padding: 12px 16px; border-radius: 99px; border: 2px solid transparent; background: var(--card); font: inherit; color: var(--ink); box-shadow: var(--shadow); outline: none; }
+  .search:focus { border-color: var(--rose); }
+  select { padding: 12px 14px; border-radius: 99px; border: none; background: var(--card); font: inherit; color: var(--ink); box-shadow: var(--shadow); cursor: pointer; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; width: 100%; }
+  .chip { border: none; padding: 8px 16px; border-radius: 99px; background: var(--card); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; box-shadow: var(--shadow); transition: transform .15s, background .15s; }
+  .chip:hover { transform: translateY(-2px); }
+  .chip.active { background: var(--rose-deep); color: #fff; }
+
+  .list { display: grid; gap: 12px; }
+  .item { display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 22px; padding: 16px 18px; box-shadow: var(--shadow); transition: transform .2s, opacity .3s; animation: pop .35s ease both; }
+  .item:hover { transform: translateY(-3px); }
+  .item.done { opacity: .6; }
+  .item.done .title { text-decoration: line-through; }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .check { appearance: none; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--rose); background: #fff; cursor: pointer; flex: none; display: grid; place-content: center; transition: .2s; }
+  .check:checked { background: var(--rose-deep); border-color: var(--rose-deep); }
+  .check:checked::after { content: "✓"; color: #fff; font-size: 15px; }
+
+  .info { flex: 1; min-width: 0; }
+  .title { font-weight: 600; font-size: 16px; }
+  .meta { font-size: 13px; color: var(--muted); margin-top: 3px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .course { background: var(--lilac); color: #6d56a3; padding: 2px 10px; border-radius: 99px; font-size: 12px; font-weight: 500; }
+
+  .badge { font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 99px; white-space: nowrap; }
+  .b-not { background: var(--blush); color: var(--rose-deep); }
+  .b-prog { background: var(--butter); color: var(--butter-ink); }
+  .b-done { background: var(--sage); color: var(--sage-ink); }
+  .due-soon { color: var(--rose-deep); font-weight: 600; }
+
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  .note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 26px; }
+  .spark { position: fixed; pointer-events: none; font-size: 20px; animation: float 1s ease-out forwards; z-index: 9; }
+  @keyframes float { to { transform: translate(var(--x), var(--y)) scale(.4); opacity: 0; } }
+
+  @media (max-width: 520px) {
+    .item { flex-wrap: wrap; }
+    .badge { margin-left: 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">✿ Study Planner ✿</div>
+    <h1>My <em>Assignment</em> Tracker</h1>
+    <p class="sub" id="today"></p>
+  </header>
+
+  <section class="stats">
+    <div class="stat"><b id="sTotal">0</b><span>Total</span></div>
+    <div class="stat"><b id="sSoon">0</b><span>Due this week</span></div>
+    <div class="stat"><b id="sDone">0</b><span>Completed</span></div>
+  </section>
+
+  <section class="progress">
+    <div class="progress-top"><span>Overall progress</span><b id="pct">0%</b></div>
+    <div class="bar"><div class="fill" id="fill"></div></div>
+  </section>
+
+  <section class="controls">
+    <input class="search" id="search" type="search" placeholder="Search assignments or courses…">
+    <select id="sort">
+      <option value="due">Sort: Due date</option>
+      <option value="course">Sort: Course</option>
+      <option value="status">Sort: Status</option>
+    </select>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <section class="list" id="list"></section>
+  <p class="note" id="note"></p>
+</div>
+
+<script>
+/* ============ EDIT THIS ============
+   Paste your published Google Sheet CSV link between the quotes.
+   (Google Sheets → File → Share → Publish to web → choose "Comma-separated values (.csv)")
+   Leave it empty to see sample data. */
+const SHEET_CSV_URL = "";
+/* =================================== */
+
+const SAMPLE = [
+  { name: "Anatomy lab report", course: "BIOL 2401", due: offsetDays(2), status: "In progress" },
+  { name: "Statistics problem set 4", course: "STAT 1300", due: offsetDays(5), status: "Not started" },
+  { name: "Chapter 6 reading notes", course: "BIOL 2401", due: offsetDays(-1), status: "Done" },
+  { name: "Dental school personal statement draft", course: "Admissions", due: offsetDays(12), status: "Not started" }
+];
+function offsetDays(n){ const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+
+let rows = [];
+let filter = "All";
+const doneOverrides = JSON.parse(safeGet("doneOverrides") || "{}");
+
+function safeGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function safeSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+
+function parseCSV(text){
+  const out = []; let row = [], cur = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) {
+      if (c === '"' && text[i+1] === '"') { cur += '"'; i++; }
+      else if (c === '"') q = false;
+      else cur += c;
+    } else if (c === '"') q = true;
+    else if (c === ',') { row.push(cur); cur = ""; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && text[i+1] === '\n') i++;
+      row.push(cur); out.push(row); row = []; cur = "";
+    } else cur += c;
+  }
+  if (cur || row.length) { row.push(cur); out.push(row); }
+  return out.filter(r => r.some(x => x.trim() !== ""));
+}
+
+function normStatus(s){
+  s = (s || "").toLowerCase();
+  if (/done|complete|submitted|finished/.test(s)) return "Done";
+  if (/prog|working|started|doing/.test(s) && !/not/.test(s)) return "In progress";
+  return "Not started";
+}
+
+function fromCSV(text){
+  const data = parseCSV(text);
+  if (data.length < 2) return [];
+  const head = data[0].map(h => h.trim().toLowerCase());
+  const find = (...keys) => head.findIndex(h => keys.some(k => h.includes(k)));
+  let iName = find("assignment","task","title","name");
+  let iCourse = find("course","class","subject");
+  let iDue = find("due","date","deadline");
+  let iStatus = find("status","progress","state");
+  if (iName < 0) iName = 0;
+  return data.slice(1).map(r => ({
+    name: (r[iName] || "").trim(),
+    course: iCourse >= 0 ? (r[iCourse] || "").trim() : "",
+    due: iDue >= 0 ? (r[iDue] || "").trim() : "",
+    status: iStatus >= 0 ? normStatus(r[iStatus]) : "Not started"
+  })).filter(r => r.name);
+}
+
+function parseDate(s){
+  if (!s) return null;
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+function fmtDate(s){
+  const d = parseDate(s);
+  if (!d) return s || "No date";
+  return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+}
+function daysUntil(s){
+  const d = parseDate(s); if (!d) return null;
+  const t = new Date(); t.setHours(0,0,0,0);
+  d.setHours(0,0,0,0);
+  return Math.round((d - t) / 86400000);
+}
+
+function status(r){ return doneOverrides[r.name + "|" + r.due] ? "Done" : r.status; }
+
+function render(){
+  const q = document.getElementById("search").value.toLowerCase();
+  const sort = document.getElementById("sort").value;
+
+  let list = rows.filter(r => {
+    const st = status(r);
+    return (filter === "All" || st === filter) &&
+           (r.name + " " + r.course).toLowerCase().includes(q);
+  });
+
+  const order = { "Not started": 0, "In progress": 1, "Done": 2 };
+  list.sort((a, b) => {
+    if (sort === "course") return a.course.localeCompare(b.course);
+    if (sort === "status") return order[status(a)] - order[status(b)];
+    const da = parseDate(a.due), db = parseDate(b.due);
+    return (da ? da : Infinity) - (db ? db : Infinity);
+  });
+
+  const el = document.getElementById("list");
+  el.innerHTML = "";
+  if (!list.length) el.innerHTML = '<div class="empty">Nothing here — enjoy the calm ✨</div>';
+
+  list.forEach((r, i) => {
+    const st = status(r);
+    const n = daysUntil(r.due);
+    let dueTxt = fmtDate(r.due), soon = false;
+    if (n !== null && st !== "Done") {
+      if (n < 0) { dueTxt += " · overdue"; soon = true; }
+      else if (n === 0) { dueTxt += " · today!"; soon = true; }
+      else if (n <= 3) { dueTxt += ` · in ${n} day${n>1?"s":""}`; soon = true; }
+    }
+    const cls = st === "Done" ? "b-done" : st === "In progress" ? "b-prog" : "b-not";
+    const item = document.createElement("div");
+    item.className = "item" + (st === "Done" ? " done" : "");
+    item.style.animationDelay = (i * 40) + "ms";
+    item.innerHTML = `
+      <input type="checkbox" class="check" ${st === "Done" ? "checked" : ""} aria-label="Mark done">
+      <div class="info">
+        <div class="title"></div>
+        <div class="meta">
+          ${r.course ? '<span class="course"></span>' : ""}
+          <span class="${soon ? "due-soon" : ""}">${dueTxt}</span>
+        </div>
+      </div>
+      <span class="badge ${cls}">${st}</span>`;
+    item.querySelector(".title").textContent = r.name;
+    if (r.course) item.querySelector(".course").textContent = r.course;
+    item.querySelector(".check").addEventListener("change", e => {
+      const key = r.name + "|" + r.due;
+      if (e.target.checked) { doneOverrides[key] = true; sparkle(e); }
+      else delete doneOverrides[key];
+      safeSet("doneOverrides", JSON.stringify(doneOverrides));
+      render();
+    });
+    el.appendChild(item);
+  });
+
+  stats();
+}
+
+function stats(){
+  const total = rows.length;
+  const done = rows.filter(r => status(r) === "Done").length;
+  const soon = rows.filter(r => { const n = daysUntil(r.due); return status(r) !== "Done" && n !== null && n <= 7; }).length;
+  document.getElementById("sTotal").textContent = total;
+  document.getElementById("sDone").textContent = done;
+  document.getElementById("sSoon").textContent = soon;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById("pct").textContent = pct + "%";
+  document.getElementById("fill").style.width = pct + "%";
+}
+
+function sparkle(e){
+  const rect = e.target.getBoundingClientRect();
+  ["✨","🌸","💖","✨","🌷"].forEach(s => {
+    const sp = document.createElement("span");
+    sp.className = "spark"; sp.textContent = s;
+    sp.style.left = rect.left + 6 + "px"; sp.style.top = rect.top + "px";
+    sp.style.setProperty("--x", (Math.random()*120 - 60) + "px");
+    sp.style.setProperty("--y", (-30 - Math.random()*70) + "px");
+    document.body.appendChild(sp);
+    setTimeout(() => sp.remove(), 1000);
+  });
+}
+
+function buildChips(){
+  const c = document.getElementById("chips");
+  ["All","Not started","In progress","Done"].forEach(name => {
+    const b = document.createElement("button");
+    b.className = "chip" + (name === filter ? " active" : "");
+    b.textContent = name;
+    b.onclick = () => {
+      filter = name;
+      c.querySelectorAll(".chip").forEach(x => x.classList.toggle("active", x === b));
+      render();
+    };
+    c.appendChild(b);
+  });
+}
+
+async function load(){
+  const note = document.getElementById("note");
+  if (!SHEET_CSV_URL) {
+    rows = SAMPLE;
+    note.textContent = "Showing sample data. Add your published Sheet link in index.html to see your own.";
+  } else {
+    try {
+      const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error(res.status);
+      rows = fromCSV(await res.text());
+      note.textContent = "Synced from Google Sheets · checkmarks here are saved on this device only";
+    } catch (err) {
+      rows = SAMPLE;
+      note.textContent = "Couldn't load your Sheet, so sample data is showing. Check that the link is a published CSV link.";
+    }
+  }
+  render();
+}
+
+document.getElementById("today").textContent =
+  new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+document.getElementById("search").addEventListener("input", render);
+document.getElementById("sort").addEventListener("change", render);
+buildChips();
+load();
+</script>
+</body>
+</html>
