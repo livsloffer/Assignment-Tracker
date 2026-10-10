@@ -17,6 +17,7 @@
     --rose-deep: #e07a96;
     --blush: #fde4ea;
     --lilac: #e9defa;
+    --lilac-ink: #6d56a3;
     --sage: #dcefe3;
     --sage-ink: #4f8a69;
     --butter: #fff1cf;
@@ -34,25 +35,48 @@
       var(--bg);
     min-height: 100vh;
   }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 18px 80px; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 40px 18px 80px; }
 
-  header { text-align: center; margin-bottom: 28px; }
+  header { text-align: center; margin-bottom: 26px; }
   .eyebrow { letter-spacing: .25em; text-transform: uppercase; font-size: 12px; color: var(--rose-deep); font-weight: 600; }
   h1 { font-family: 'Playfair Display', serif; font-size: clamp(34px, 6vw, 52px); margin: 8px 0 6px; font-weight: 600; }
   h1 em { color: var(--rose-deep); font-weight: 500; }
   .sub { color: var(--muted); margin: 0; }
 
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 26px 0 18px; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; margin: 34px 0 14px; }
+  h3 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--rose-deep); margin: 0 0 12px; font-weight: 600; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0 14px; }
   .stat { background: var(--card); border-radius: 20px; padding: 16px; text-align: center; box-shadow: var(--shadow); }
   .stat b { display: block; font-size: 28px; font-family: 'Playfair Display', serif; color: var(--rose-deep); }
   .stat span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
 
-  .progress { background: var(--card); border-radius: 20px; padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 22px; }
-  .progress-top { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+  .card { background: var(--card); border-radius: 22px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .progress-top { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; margin-bottom: 8px; }
   .bar { height: 12px; background: var(--blush); border-radius: 99px; overflow: hidden; }
-  .fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--rose), var(--rose-deep)); border-radius: 99px; transition: width .6s ease; }
+  .fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--rose), var(--rose-deep)); border-radius: 99px; transition: width .7s ease; }
 
-  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .grades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grade { background: var(--card); border-radius: 22px; padding: 18px; box-shadow: var(--shadow); text-align: center; transition: transform .2s; cursor: pointer; border: 2px solid transparent; }
+  .grade:hover { transform: translateY(-3px); }
+  .grade.on { border-color: var(--rose); }
+  .grade .cname { font-size: 13px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+  .grade .letter { font-family: 'Playfair Display', serif; font-size: 44px; line-height: 1.1; margin: 6px 0 0; }
+  .grade .pct { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+  .grade .mini { height: 6px; background: var(--blush); border-radius: 99px; overflow: hidden; }
+  .grade .mini i { display: block; height: 100%; background: var(--rose); border-radius: 99px; transition: width .7s ease; }
+  .L-A { color: var(--sage-ink); } .L-B { color: var(--butter-ink); } .L-C, .L-D, .L-F { color: var(--rose-deep); }
+  .hint { font-size: 12px; color: var(--muted); text-align: center; margin-top: 10px; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .mini-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px dashed var(--blush); font-size: 14px; }
+  .mini-row:first-of-type { border-top: none; }
+  .mini-row small { display: block; color: var(--muted); font-size: 12px; }
+  .pill { background: var(--lilac); color: var(--lilac-ink); padding: 2px 10px; border-radius: 99px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .when { font-size: 12px; font-weight: 600; color: var(--rose-deep); white-space: nowrap; }
+  .none { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
   .search { flex: 1 1 200px; padding: 12px 16px; border-radius: 99px; border: 2px solid transparent; background: var(--card); font: inherit; color: var(--ink); box-shadow: var(--shadow); outline: none; }
   .search:focus { border-color: var(--rose); }
   select { padding: 12px 14px; border-radius: 99px; border: none; background: var(--card); font: inherit; color: var(--ink); box-shadow: var(--shadow); cursor: pointer; }
@@ -64,22 +88,20 @@
   .list { display: grid; gap: 12px; }
   .item { display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 22px; padding: 16px 18px; box-shadow: var(--shadow); transition: transform .2s, opacity .3s; animation: pop .35s ease both; }
   .item:hover { transform: translateY(-3px); }
-  .item.done { opacity: .6; }
+  .item.done { opacity: .62; }
   .item.done .title { text-decoration: line-through; }
   @keyframes pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-  .check { appearance: none; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--rose); background: #fff; cursor: pointer; flex: none; display: grid; place-content: center; transition: .2s; }
+  .check { appearance: none; -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--rose); background: #fff; cursor: pointer; flex: none; display: grid; place-content: center; transition: .2s; margin: 0; }
   .check:checked { background: var(--rose-deep); border-color: var(--rose-deep); }
   .check:checked::after { content: "✓"; color: #fff; font-size: 15px; }
 
   .info { flex: 1; min-width: 0; }
   .title { font-weight: 600; font-size: 16px; }
-  .meta { font-size: 13px; color: var(--muted); margin-top: 3px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .course { background: var(--lilac); color: #6d56a3; padding: 2px 10px; border-radius: 99px; font-size: 12px; font-weight: 500; }
-
+  .meta { font-size: 13px; color: var(--muted); margin-top: 4px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .badge { font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 99px; white-space: nowrap; }
-  .b-not { background: var(--blush); color: var(--rose-deep); }
-  .b-prog { background: var(--butter); color: var(--butter-ink); }
+  .b-todo { background: var(--blush); color: var(--rose-deep); }
+  .b-exam { background: var(--butter); color: var(--butter-ink); }
   .b-done { background: var(--sage); color: var(--sage-ink); }
   .due-soon { color: var(--rose-deep); font-weight: 600; }
 
@@ -88,6 +110,10 @@
   .spark { position: fixed; pointer-events: none; font-size: 20px; animation: float 1s ease-out forwards; z-index: 9; }
   @keyframes float { to { transform: translate(var(--x), var(--y)) scale(.4); opacity: 0; } }
 
+  @media (max-width: 640px) {
+    .grades, .two { grid-template-columns: 1fr; }
+    .grades { gap: 10px; }
+  }
   @media (max-width: 520px) {
     .item { flex-wrap: wrap; }
     .badge { margin-left: 40px; }
@@ -103,24 +129,41 @@
   </header>
 
   <section class="stats">
-    <div class="stat"><b id="sTotal">0</b><span>Total</span></div>
-    <div class="stat"><b id="sSoon">0</b><span>Due this week</span></div>
-    <div class="stat"><b id="sDone">0</b><span>Completed</span></div>
+    <div class="stat"><b id="sDone">0</b><span>Complete</span></div>
+    <div class="stat"><b id="sLeft">0</b><span>Left</span></div>
+    <div class="stat"><b id="sSoon">0</b><span>Due in 7 days</span></div>
   </section>
 
-  <section class="progress">
-    <div class="progress-top"><span>Overall progress</span><b id="pct">0%</b></div>
+  <section class="card">
+    <div class="progress-top"><span id="cheer">Semester progress</span><b id="pct">0%</b></div>
     <div class="bar"><div class="fill" id="fill"></div></div>
   </section>
 
+  <h2>Report Card</h2>
+  <section class="grades" id="grades"></section>
+  <p class="hint">Tap a course to filter the list below.</p>
+
+  <section class="two">
+    <div class="card">
+      <h3>Upcoming Tests</h3>
+      <div id="tests"></div>
+    </div>
+    <div class="card">
+      <h3>To Complete This Week</h3>
+      <div id="week"></div>
+    </div>
+  </section>
+
+  <h2>All Assignments</h2>
   <section class="controls">
-    <input class="search" id="search" type="search" placeholder="Search assignments or courses…">
+    <input class="search" id="search" type="search" placeholder="Search assignments…">
     <select id="sort">
       <option value="due">Sort: Due date</option>
       <option value="course">Sort: Course</option>
-      <option value="status">Sort: Status</option>
+      <option value="sched">Sort: Planned date</option>
     </select>
-    <div class="chips" id="chips"></div>
+    <div class="chips" id="statusChips"></div>
+    <div class="chips" id="courseChips"></div>
   </section>
 
   <section class="list" id="list"></section>
@@ -128,28 +171,78 @@
 </div>
 
 <script>
-/* ============ EDIT THIS ============
-   Paste your published Google Sheet CSV link between the quotes.
-   (Google Sheets → File → Share → Publish to web → choose "Comma-separated values (.csv)")
-   Leave it empty to see sample data. */
+/* ============ OPTIONAL: LIVE SYNC ============
+   The page already contains a copy of your tracker (below), so it works as-is.
+   To make it update automatically when you edit your Google Sheet:
+   Google Sheets → File → Share → Publish to web → pick the "Assignments" tab →
+   change "Web page" to "Comma-separated values (.csv)" → Publish → paste the link here. */
 const SHEET_CSV_URL = "";
-/* =================================== */
+/* ============================================= */
 
-const SAMPLE = [
-  { name: "Anatomy lab report", course: "BIOL 2401", due: offsetDays(2), status: "In progress" },
-  { name: "Statistics problem set 4", course: "STAT 1300", due: offsetDays(5), status: "Not started" },
-  { name: "Chapter 6 reading notes", course: "BIOL 2401", due: offsetDays(-1), status: "Done" },
-  { name: "Dental school personal statement draft", course: "Admissions", due: offsetDays(12), status: "Not started" }
-];
-function offsetDays(n){ const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+const SNAPSHOT_DATE = "Oct 9, 2026";
+const COURSE_ORDER = ["Chemistry", "Anatomy", "Microbiology"];
 
-let rows = [];
-let filter = "All";
-const doneOverrides = JSON.parse(safeGet("doneOverrides") || "{}");
+/* Saved copy of your tracker */
+const DATA = [{"name":"Information Worksheet","course":"Anatomy","due":"2026-08-25","sched":"2026-08-25","done":true,"earned":5.0,"possible":5.0},{"name":"Intro to Microbiology Quiz","course":"Microbiology","due":"2026-08-26","sched":"2026-08-25","done":true,"earned":9.0,"possible":9.0},{"name":"Germ Theory Assignment","course":"Microbiology","due":"2026-08-26","sched":"2026-08-25","done":true,"earned":5.0,"possible":5.0},{"name":"Student Introductions","course":"Chemistry","due":"2026-08-27","sched":"2026-08-25","done":true,"earned":2.5,"possible":2.5},{"name":"Orientation Assignment","course":"Microbiology","due":"2026-08-28","sched":"2026-08-28","done":true,"earned":0.0,"possible":0.0},{"name":"Syllabus Contract","course":"Microbiology","due":"2026-08-28","sched":"2026-08-28","done":true,"earned":0.0,"possible":0.0},{"name":"Lab Safety Quiz","course":"Anatomy","due":"2026-08-28","sched":"2026-08-28","done":true,"earned":4.0,"possible":5.0},{"name":"SDS Activity","course":"Chemistry","due":"2026-08-29","sched":"2026-08-28","done":true,"earned":2.43,"possible":2.5},{"name":"Lab Safety Quiz","course":"Chemistry","due":"2026-08-29","sched":"2026-08-28","done":true,"earned":5.94,"possible":6.0},{"name":"Lab Safety Quiz","course":"Microbiology","due":"2026-08-30","sched":"2026-08-29","done":true,"earned":0.0,"possible":0.0},{"name":"Prokaryotes S&F Quiz","course":"Microbiology","due":"2026-08-31","sched":"2026-08-29","done":true,"earned":9.0,"possible":9.0},{"name":"Prokaryotes Classification Quiz","course":"Microbiology","due":"2026-09-02","sched":"2026-08-30","done":true,"earned":9.0,"possible":9.0},{"name":"APGAR Measurement","course":"Chemistry","due":"2026-09-04","sched":"2026-09-04","done":true,"earned":2.25,"possible":2.5},{"name":"Endocrine Physiology Lab Report","course":"Anatomy","due":"2026-09-04","sched":"2026-09-04","done":true,"earned":8.0,"possible":10.0},{"name":"Significant Figures Exercise","course":"Chemistry","due":"2026-09-05","sched":"2026-09-04","done":true,"earned":2.45,"possible":2.5},{"name":"Lava Lamp Exercise","course":"Chemistry","due":"2026-09-06","sched":"2026-09-04","done":true,"earned":2.43,"possible":2.5},{"name":"Homework 1 Endocrine","course":"Anatomy","due":"2026-09-08","sched":"2026-09-04","done":true,"earned":9.0,"possible":10.0},{"name":"Laboratory 2","course":"Chemistry","due":"2026-09-08","sched":"2026-09-04","done":true,"earned":6.0,"possible":6.0},{"name":"Chapter 1 Problem Set","course":"Chemistry","due":"2026-09-08","sched":"2026-09-07","done":true,"earned":15.0,"possible":15.0},{"name":"Bacterial Genetics Quiz","course":"Microbiology","due":"2026-09-09","sched":"2026-09-07","done":true,"earned":9.0,"possible":9.0},{"name":"Protein Synthesis Problems","course":"Microbiology","due":"2026-09-09","sched":"2026-09-07","done":true,"earned":2.0,"possible":0.0},{"name":"Scientific Method Quiz","course":"Chemistry","due":"2026-09-09","sched":"2026-09-08","done":true,"earned":1.68,"possible":2.5},{"name":"DNA Replication Diagram","course":"Microbiology","due":"2026-09-11","sched":"2026-09-11","done":true,"earned":5.0,"possible":5.0},{"name":"Viruses and Prions Quiz","course":"Microbiology","due":"2026-09-13","sched":"2026-09-12","done":true,"earned":8.0,"possible":9.0},{"name":"Density Lab","course":"Chemistry","due":"2026-09-13","sched":"2026-09-12","done":true,"earned":5.94,"possible":6.0},{"name":"Lecture Exam 1","course":"Microbiology","due":"2026-09-14","sched":"2026-09-13","done":true,"earned":67.24,"possible":100.0},{"name":"Heart Physiology Lab Report","course":"Anatomy","due":"2026-09-17","sched":"2026-09-17","done":true,"earned":10.0,"possible":10.0},{"name":"Blood Homework","course":"Anatomy","due":"2026-09-18","sched":"2026-09-18","done":true,"earned":7.77,"possible":10.0},{"name":"Separating a Mixture Lab","course":"Chemistry","due":"2026-09-20","sched":"2026-09-18","done":true,"earned":0.0,"possible":0.0},{"name":"World Lab Day Discussion","course":"Chemistry","due":"2026-09-20","sched":"2026-09-18","done":true,"earned":null,"possible":null},{"name":"Enzyme Quiz","course":"Microbiology","due":"2026-09-21","sched":"2026-09-19","done":true,"earned":8.99,"possible":9.0},{"name":"Periodic Table Annotation","course":"Chemistry","due":"2026-09-21","sched":"2026-09-20","done":true,"earned":null,"possible":null},{"name":"Lecture Exam 1","course":"Anatomy","due":"2026-09-22","sched":"2026-09-20","done":true,"earned":60.0,"possible":100.0},{"name":"Bacterial Metabolism Quiz","course":"Microbiology","due":"2026-09-23","sched":"2026-09-19","done":true,"earned":9.0,"possible":9.0},{"name":"Homework 3 Heart","course":"Anatomy","due":"2026-09-25","sched":"2026-09-19","done":true,"earned":7.86,"possible":10.0},{"name":"Chapter 3 Problem Set","course":"Chemistry","due":"2026-09-26","sched":"2026-09-19","done":true,"earned":0.0,"possible":0.0},{"name":"Flame Test Lab","course":"Chemistry","due":"2026-09-27","sched":"2026-09-25","done":true,"earned":null,"possible":null},{"name":"Bacterial Growth Quiz","course":"Microbiology","due":"2026-09-28","sched":"2026-09-25","done":true,"earned":8.5,"possible":9.0},{"name":"Unknown Lab Report #1","course":"Microbiology","due":"2026-09-28","sched":"2026-09-25","done":true,"earned":null,"possible":null},{"name":"Lab Exam #1","course":"Microbiology","due":"2026-09-28","sched":"2026-09-26","done":true,"earned":70.0,"possible":75.0},{"name":"Control Quiz","course":"Microbiology","due":"2026-09-30","sched":"2026-09-25","done":true,"earned":9.0,"possible":9.0},{"name":"Lab Exam #1","course":"Anatomy","due":"2026-10-01","sched":"2026-09-27","done":true,"earned":45.5,"possible":50.0},{"name":"Textbook HW","course":"Chemistry","due":"2026-10-02","sched":"2026-10-02","done":true,"earned":0.0,"possible":0.0},{"name":"Practice Quiz","course":"Chemistry","due":"2026-10-03","sched":"2026-10-02","done":true,"earned":null,"possible":null},{"name":"Bacterial Control Assignment","course":"Microbiology","due":"2026-10-04","sched":"2026-10-02","done":true,"earned":null,"possible":null},{"name":"Identifying Unknown Substances Lab","course":"Chemistry","due":"2026-10-04","sched":"2026-10-02","done":true,"earned":6.0,"possible":6.0},{"name":"Antibiotics Quiz","course":"Microbiology","due":"2026-10-05","sched":"2026-10-02","done":true,"earned":9.0,"possible":9.0},{"name":"Antivirals/Antifungals Quiz","course":"Microbiology","due":"2026-10-06","sched":"2026-10-02","done":true,"earned":8.49,"possible":9.0},{"name":"Test 1","course":"Chemistry","due":"2026-10-06","sched":"2026-10-04","done":true,"earned":18.3,"possible":30.0},{"name":"Lecture Exam 2","course":"Microbiology","due":"2026-10-07","sched":"2026-10-04","done":true,"earned":null,"possible":null},{"name":"Dirty Doctors Assignment","course":"Microbiology","due":"2026-10-09","sched":"2026-10-03","done":true,"earned":null,"possible":null},{"name":"Textbook HW","course":"Chemistry","due":"2026-10-09","sched":"2026-10-04","done":true,"earned":0.0,"possible":0.0},{"name":"Antibiotics Discussion","course":"Microbiology","due":"2026-10-11","sched":"2026-10-03","done":true,"earned":null,"possible":null},{"name":"Molar Mass Lab","course":"Chemistry","due":"2026-10-11","sched":"2026-10-02","done":true,"earned":5.82,"possible":6.0},{"name":"Mech. of Pathogenicity Quiz","course":"Microbiology","due":"2026-10-14","sched":"2026-10-09","done":true,"earned":8.0,"possible":9.0},{"name":"Textbook HW","course":"Chemistry","due":"2026-10-16","sched":"2026-10-02","done":true,"earned":0.0,"possible":0.0},{"name":"Empirical Formula Lab","course":"Chemistry","due":"2026-10-18","sched":"2026-10-03","done":true,"earned":null,"possible":null},{"name":"Nonspecific Host Defenses Quiz","course":"Microbiology","due":"2026-10-19","sched":"2026-10-09","done":true,"earned":8.55,"possible":9.0},{"name":"Textbook HW","course":"Chemistry","due":"2026-10-23","sched":"2026-10-23","done":false,"earned":null,"possible":null},{"name":"Pathogenicity & Prevention Discussion","course":"Microbiology","due":"2026-10-25","sched":"2026-10-23","done":false,"earned":null,"possible":null},{"name":"Qualitative Analysis Lab","course":"Chemistry","due":"2026-10-25","sched":"2026-10-23","done":false,"earned":null,"possible":null},{"name":"Molecular Shape Quiz","course":"Chemistry","due":"2026-10-25","sched":"2026-10-23","done":false,"earned":null,"possible":null},{"name":"Chapter 7 Bonding Theory","course":"Chemistry","due":"2026-10-25","sched":"2026-10-23","done":false,"earned":null,"possible":null},{"name":"Specific Host Defenses Quiz","course":"Microbiology","due":"2026-10-26","sched":"2026-10-24","done":false,"earned":null,"possible":null},{"name":"Lecture Exam 2","course":"Anatomy","due":"2026-10-27","sched":"2026-10-25","done":false,"earned":null,"possible":null},{"name":"Biotechnology and Diagnostic Testing Quiz","course":"Microbiology","due":"2026-10-28","sched":"2026-10-24","done":false,"earned":null,"possible":null},{"name":"Bonus DNA Assignment","course":"Microbiology","due":"2026-10-28","sched":"2026-10-24","done":false,"earned":null,"possible":null},{"name":"Unknown Lab Report #2","course":"Microbiology","due":"2026-10-28","sched":"2026-10-24","done":false,"earned":null,"possible":null},{"name":"Lab Exam #2","course":"Microbiology","due":"2026-10-28","sched":"2026-10-25","done":false,"earned":null,"possible":null},{"name":"Vaccines Quiz","course":"Microbiology","due":"2026-10-30","sched":"2026-10-30","done":false,"earned":null,"possible":null},{"name":"Vaccine Table & Vaccine Schedule","course":"Microbiology","due":"2026-10-30","sched":"2026-10-30","done":false,"earned":null,"possible":null},{"name":"Vaccine Discussion","course":"Microbiology","due":"2026-11-01","sched":"2026-10-30","done":false,"earned":null,"possible":null},{"name":"Chemical Reaction Lab","course":"Chemistry","due":"2026-11-01","sched":"2026-10-31","done":false,"earned":null,"possible":null},{"name":"Chapter 8 Chemical Reactions","course":"Chemistry","due":"2026-11-01","sched":"2026-10-31","done":false,"earned":null,"possible":null},{"name":"Lecture Exam 3","course":"Microbiology","due":"2026-11-02","sched":"2026-11-01","done":false,"earned":null,"possible":null},{"name":"Lab Exam 2","course":"Anatomy","due":"2026-11-05","sched":"2026-11-01","done":false,"earned":null,"possible":null},{"name":"Textbook HW","course":"Chemistry","due":"2026-11-06","sched":"2026-11-06","done":false,"earned":null,"possible":null},{"name":"Stoichiometry Lab","course":"Chemistry","due":"2026-11-08","sched":"2026-11-06","done":false,"earned":null,"possible":null},{"name":"Chapter 9 Calculations","course":"Chemistry","due":"2026-11-08","sched":"2026-11-06","done":false,"earned":null,"possible":null},{"name":"Epidemiology Quiz","course":"Microbiology","due":"2026-11-09","sched":"2026-11-06","done":false,"earned":null,"possible":null},{"name":"Alka Seltzer Lab","course":"Chemistry","due":"2026-11-15","sched":"2026-11-07","done":false,"earned":null,"possible":null},{"name":"Epidemiology Assignment","course":"Microbiology","due":"2026-11-16","sched":"2026-11-07","done":false,"earned":null,"possible":null},{"name":"PPT 1 Assignment","course":"Microbiology","due":"2026-11-16","sched":"2026-11-07","done":false,"earned":null,"possible":null},{"name":"Textbook HW","course":"Chemistry","due":"2026-11-20","sched":"2026-11-20","done":false,"earned":null,"possible":null},{"name":"Enthalpy Lab","course":"Chemistry","due":"2026-11-22","sched":"2026-11-20","done":false,"earned":null,"possible":null},{"name":"Chapter 10 Problems","course":"Chemistry","due":"2026-11-22","sched":"2026-11-20","done":false,"earned":null,"possible":null},{"name":"Textbook HW","course":"Chemistry","due":"2026-11-25","sched":"2026-11-22","done":false,"earned":null,"possible":null},{"name":"Lecture Exam 4","course":"Microbiology","due":"2026-11-30","sched":"2026-11-29","done":false,"earned":null,"possible":null},{"name":"Determination of Absolute Zero Lab","course":"Chemistry","due":"2026-11-30","sched":"2026-11-27","done":false,"earned":null,"possible":null},{"name":"Lecture Exam 3","course":"Anatomy","due":"2026-12-01","sched":"2026-11-29","done":false,"earned":null,"possible":null},{"name":"Unknown Lab Report #3","course":"Microbiology","due":"2026-12-02","sched":"2026-11-28","done":false,"earned":null,"possible":null},{"name":"Lab Exam #3","course":"Microbiology","due":"2026-12-02","sched":"2026-11-29","done":false,"earned":null,"possible":null},{"name":"Textbook HW","course":"Chemistry","due":"2026-12-04","sched":"2026-12-04","done":false,"earned":null,"possible":null},{"name":"Lab Exam 3","course":"Anatomy","due":"2026-12-10","sched":"2026-12-06","done":false,"earned":null,"possible":null},{"name":"Final Exam","course":"Chemistry","due":"2026-12-10","sched":"2026-12-06","done":false,"earned":null,"possible":null},{"name":"Protista Quiz","course":"Microbiology","due":"2026-12-13","sched":"2026-12-11","done":false,"earned":null,"possible":null},{"name":"Fungi Quiz","course":"Microbiology","due":"2026-12-13","sched":"2026-12-11","done":false,"earned":null,"possible":null},{"name":"Helminths Quiz","course":"Microbiology","due":"2026-12-13","sched":"2026-12-11","done":false,"earned":null,"possible":null}];
+
+let rows = DATA.slice();
+let statusFilter = "To do";
+let courseFilter = "All";
 
 function safeGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
 function safeSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+let overrides = {};
+try { overrides = JSON.parse(safeGet("overrides") || "{}"); } catch(e){ overrides = {}; }
 
+/* ---------- dates ---------- */
+function parseDate(s){
+  if (!s) return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+  const d = new Date(s);
+  if (isNaN(d)) return null;
+  d.setHours(0,0,0,0);
+  return d;
+}
+function toISO(d){
+  const p = n => String(n).padStart(2,"0");
+  return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate());
+}
+function today(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
+function daysUntil(s){
+  const d = parseDate(s); if (!d) return null;
+  return Math.round((d - today()) / 86400000);
+}
+function fmtDate(s){
+  const d = parseDate(s);
+  return d ? d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }) : "No date";
+}
+function whenText(n){
+  if (n === null) return "";
+  if (n < 0) return "overdue";
+  if (n === 0) return "today!";
+  if (n === 1) return "tomorrow";
+  return "in " + n + " days";
+}
+
+/* ---------- data helpers ---------- */
+const isExam = r => /\b(tests?|exams?)\b/i.test(r.name);
+const keyOf = r => r.name + "|" + r.course + "|" + r.due;
+function isDone(r){ const k = keyOf(r); return (k in overrides) ? overrides[k] : r.done; }
+function letter(p){ return p >= .9 ? "A" : p >= .8 ? "B" : p >= .7 ? "C" : p >= .6 ? "D" : "F"; }
+function scoreText(r){
+  if (r.earned === null) return "";
+  if (r.possible > 0) return r.earned + "/" + r.possible;
+  return r.earned > 0 ? "+" + r.earned + " bonus" : "";
+}
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+/* ---------- Google Sheets CSV ---------- */
 function parseCSV(text){
   const out = []; let row = [], cur = "", q = false;
   for (let i = 0; i < text.length; i++) {
@@ -168,174 +261,216 @@ function parseCSV(text){
   if (cur || row.length) { row.push(cur); out.push(row); }
   return out.filter(r => r.some(x => x.trim() !== ""));
 }
-
-function normStatus(s){
-  s = (s || "").toLowerCase();
-  if (/done|complete|submitted|finished/.test(s)) return "Done";
-  if (/prog|working|started|doing/.test(s) && !/not/.test(s)) return "In progress";
-  return "Not started";
-}
-
 function fromCSV(text){
   const data = parseCSV(text);
   if (data.length < 2) return [];
   const head = data[0].map(h => h.trim().toLowerCase());
-  const find = (...keys) => head.findIndex(h => keys.some(k => h.includes(k)));
-  let iName = find("assignment","task","title","name");
-  let iCourse = find("course","class","subject");
-  let iDue = find("due","date","deadline");
-  let iStatus = find("status","progress","state");
-  if (iName < 0) iName = 0;
+  const idx = (...keys) => head.findIndex(h => keys.some(k => h.includes(k)));
+  const iName = idx("assignment"), iCourse = idx("course"), iDue = idx("due date"),
+        iSched = idx("scheduled"), iSub = idx("submitted"),
+        iEarn = idx("points earned"), iPoss = idx("points possible");
+  if (iName < 0 || iDue < 0) throw new Error("columns");
+  const num = v => { const n = parseFloat(v); return isNaN(n) ? null : n; };
+  const iso = v => { const d = parseDate((v || "").trim()); return d ? toISO(d) : ""; };
   return data.slice(1).map(r => ({
     name: (r[iName] || "").trim(),
     course: iCourse >= 0 ? (r[iCourse] || "").trim() : "",
-    due: iDue >= 0 ? (r[iDue] || "").trim() : "",
-    status: iStatus >= 0 ? normStatus(r[iStatus]) : "Not started"
+    due: iso(r[iDue]),
+    sched: iSched >= 0 ? iso(r[iSched]) : "",
+    done: iSub >= 0 ? /^true$/i.test((r[iSub] || "").trim()) : false,
+    earned: iEarn >= 0 ? num(r[iEarn]) : null,
+    possible: iPoss >= 0 ? num(r[iPoss]) : null
   })).filter(r => r.name);
 }
 
-function parseDate(s){
-  if (!s) return null;
-  const d = new Date(s);
-  return isNaN(d) ? null : d;
-}
-function fmtDate(s){
-  const d = parseDate(s);
-  if (!d) return s || "No date";
-  return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
-}
-function daysUntil(s){
-  const d = parseDate(s); if (!d) return null;
-  const t = new Date(); t.setHours(0,0,0,0);
-  d.setHours(0,0,0,0);
-  return Math.round((d - t) / 86400000);
-}
-
-function status(r){ return doneOverrides[r.name + "|" + r.due] ? "Done" : r.status; }
-
-function render(){
-  const q = document.getElementById("search").value.toLowerCase();
-  const sort = document.getElementById("sort").value;
-
-  let list = rows.filter(r => {
-    const st = status(r);
-    return (filter === "All" || st === filter) &&
-           (r.name + " " + r.course).toLowerCase().includes(q);
-  });
-
-  const order = { "Not started": 0, "In progress": 1, "Done": 2 };
-  list.sort((a, b) => {
-    if (sort === "course") return a.course.localeCompare(b.course);
-    if (sort === "status") return order[status(a)] - order[status(b)];
-    const da = parseDate(a.due), db = parseDate(b.due);
-    return (da ? da : Infinity) - (db ? db : Infinity);
-  });
-
-  const el = document.getElementById("list");
-  el.innerHTML = "";
-  if (!list.length) el.innerHTML = '<div class="empty">Nothing here — enjoy the calm ✨</div>';
-
-  list.forEach((r, i) => {
-    const st = status(r);
-    const n = daysUntil(r.due);
-    let dueTxt = fmtDate(r.due), soon = false;
-    if (n !== null && st !== "Done") {
-      if (n < 0) { dueTxt += " · overdue"; soon = true; }
-      else if (n === 0) { dueTxt += " · today!"; soon = true; }
-      else if (n <= 3) { dueTxt += ` · in ${n} day${n>1?"s":""}`; soon = true; }
-    }
-    const cls = st === "Done" ? "b-done" : st === "In progress" ? "b-prog" : "b-not";
-    const item = document.createElement("div");
-    item.className = "item" + (st === "Done" ? " done" : "");
-    item.style.animationDelay = (i * 40) + "ms";
-    item.innerHTML = `
-      <input type="checkbox" class="check" ${st === "Done" ? "checked" : ""} aria-label="Mark done">
-      <div class="info">
-        <div class="title"></div>
-        <div class="meta">
-          ${r.course ? '<span class="course"></span>' : ""}
-          <span class="${soon ? "due-soon" : ""}">${dueTxt}</span>
-        </div>
-      </div>
-      <span class="badge ${cls}">${st}</span>`;
-    item.querySelector(".title").textContent = r.name;
-    if (r.course) item.querySelector(".course").textContent = r.course;
-    item.querySelector(".check").addEventListener("change", e => {
-      const key = r.name + "|" + r.due;
-      if (e.target.checked) { doneOverrides[key] = true; sparkle(e); }
-      else delete doneOverrides[key];
-      safeSet("doneOverrides", JSON.stringify(doneOverrides));
-      render();
-    });
-    el.appendChild(item);
-  });
-
-  stats();
-}
-
-function stats(){
-  const total = rows.length;
-  const done = rows.filter(r => status(r) === "Done").length;
-  const soon = rows.filter(r => { const n = daysUntil(r.due); return status(r) !== "Done" && n !== null && n <= 7; }).length;
-  document.getElementById("sTotal").textContent = total;
+/* ---------- rendering ---------- */
+function renderStats(){
+  const done = rows.filter(isDone).length;
+  const left = rows.length - done;
+  const soon = rows.filter(r => { const n = daysUntil(r.due); return !isDone(r) && n !== null && n >= 0 && n <= 7; }).length;
   document.getElementById("sDone").textContent = done;
+  document.getElementById("sLeft").textContent = left;
   document.getElementById("sSoon").textContent = soon;
-  const pct = total ? Math.round(done / total * 100) : 0;
+  const pct = rows.length ? Math.round(done / rows.length * 100) : 0;
   document.getElementById("pct").textContent = pct + "%";
   document.getElementById("fill").style.width = pct + "%";
+  document.getElementById("cheer").textContent = "You're " + pct + "% done with the semester!";
 }
 
-function sparkle(e){
-  const rect = e.target.getBoundingClientRect();
+function renderGrades(){
+  const box = document.getElementById("grades");
+  box.innerHTML = "";
+  const courses = COURSE_ORDER.concat([...new Set(rows.map(r => r.course))].filter(c => c && !COURSE_ORDER.includes(c)));
+  courses.forEach(c => {
+    const mine = rows.filter(r => r.course === c);
+    if (!mine.length) return;
+    const earned = mine.reduce((s, r) => s + (r.earned || 0), 0);
+    const poss = mine.reduce((s, r) => s + (r.possible || 0), 0);
+    const p = poss > 0 ? earned / poss : null;
+    const g = el("div", "grade" + (courseFilter === c ? " on" : ""));
+    g.appendChild(el("div", "cname", c));
+    g.appendChild(el("div", "letter" + (p !== null ? " L-" + letter(p) : ""), p !== null ? letter(p) : "–"));
+    g.appendChild(el("div", "pct", p !== null ? (p * 100).toFixed(1) + "%" : "No grades yet"));
+    const mini = el("div", "mini"); const i = el("i");
+    i.style.width = p !== null ? Math.min(100, p * 100) + "%" : "0%";
+    mini.appendChild(i); g.appendChild(mini);
+    g.onclick = () => { courseFilter = (courseFilter === c) ? "All" : c; syncChips(); renderGrades(); renderList(); };
+    box.appendChild(g);
+  });
+}
+
+function renderTests(){
+  const box = document.getElementById("tests");
+  box.innerHTML = "";
+  const list = rows.filter(r => isExam(r) && !isDone(r) && daysUntil(r.due) !== null && daysUntil(r.due) >= 0)
+    .sort((a, b) => parseDate(a.due) - parseDate(b.due)).slice(0, 4);
+  if (!list.length) { box.appendChild(el("div", "none", "No upcoming tests")); return; }
+  list.forEach(r => {
+    const row = el("div", "mini-row");
+    const left = el("div");
+    left.appendChild(el("div", "", r.name));
+    left.appendChild(el("small", "", r.course + " · " + fmtDate(r.due)));
+    row.appendChild(left);
+    row.appendChild(el("span", "when", whenText(daysUntil(r.due))));
+    box.appendChild(row);
+  });
+}
+
+function renderWeek(){
+  const box = document.getElementById("week");
+  box.innerHTML = "";
+  const t = today();
+  const mon = new Date(t); mon.setDate(t.getDate() - ((t.getDay() + 6) % 7));
+  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  const list = rows.filter(r => {
+    const d = parseDate(r.sched);
+    return d && d >= mon && d <= sun && !isDone(r);
+  }).sort((a, b) => parseDate(a.sched) - parseDate(b.sched));
+  if (!list.length) { box.appendChild(el("div", "none", "Nothing scheduled this week ✨")); return; }
+  list.forEach(r => {
+    const row = el("div", "mini-row");
+    const left = el("div");
+    left.appendChild(el("div", "", r.name));
+    left.appendChild(el("small", "", r.course));
+    row.appendChild(left);
+    row.appendChild(el("span", "when", fmtDate(r.sched)));
+    box.appendChild(row);
+  });
+}
+
+function renderList(){
+  const q = document.getElementById("search").value.toLowerCase();
+  const sort = document.getElementById("sort").value;
+  let list = rows.filter(r => {
+    const d = isDone(r);
+    return (statusFilter === "All" || (statusFilter === "Done") === d) &&
+           (courseFilter === "All" || r.course === courseFilter) &&
+           (r.name + " " + r.course).toLowerCase().includes(q);
+  });
+  list.sort((a, b) => {
+    if (sort === "course") return a.course.localeCompare(b.course) || (parseDate(a.due) - parseDate(b.due));
+    const f = sort === "sched" ? "sched" : "due";
+    return (parseDate(a[f]) || Infinity) - (parseDate(b[f]) || Infinity);
+  });
+
+  const box = document.getElementById("list");
+  box.innerHTML = "";
+  if (!list.length) { box.appendChild(el("div", "empty", "Nothing here, enjoy the calm ✨")); return; }
+
+  list.forEach((r, i) => {
+    const done = isDone(r);
+    const n = daysUntil(r.due);
+    const soon = !done && n !== null && n <= 3;
+    const item = el("div", "item" + (done ? " done" : ""));
+    item.style.animationDelay = Math.min(i, 12) * 40 + "ms";
+
+    const cb = el("input", "check"); cb.type = "checkbox"; cb.checked = done;
+    cb.setAttribute("aria-label", "Mark " + r.name + " done");
+    cb.addEventListener("change", e => {
+      overrides[keyOf(r)] = e.target.checked;
+      if (e.target.checked) sparkle(e.target);
+      safeSet("overrides", JSON.stringify(overrides));
+      renderAll();
+    });
+
+    const info = el("div", "info");
+    info.appendChild(el("div", "title", r.name));
+    const meta = el("div", "meta");
+    meta.appendChild(el("span", "pill", r.course));
+    let dueTxt = "Due " + fmtDate(r.due);
+    if (!done && n !== null && n <= 7) dueTxt += " · " + whenText(n);
+    meta.appendChild(el("span", soon ? "due-soon" : "", dueTxt));
+    if (done && scoreText(r)) meta.appendChild(el("span", "", "Score " + scoreText(r)));
+    info.appendChild(meta);
+
+    item.appendChild(cb);
+    item.appendChild(info);
+    item.appendChild(el("span", "badge " + (done ? "b-done" : isExam(r) ? "b-exam" : "b-todo"),
+                        done ? "Done" : isExam(r) ? "Exam" : "To do"));
+    box.appendChild(item);
+  });
+}
+
+function renderAll(){ renderStats(); renderGrades(); renderTests(); renderWeek(); renderList(); }
+
+function sparkle(target){
+  const rect = target.getBoundingClientRect();
   ["✨","🌸","💖","✨","🌷"].forEach(s => {
-    const sp = document.createElement("span");
-    sp.className = "spark"; sp.textContent = s;
+    const sp = el("span", "spark", s);
     sp.style.left = rect.left + 6 + "px"; sp.style.top = rect.top + "px";
-    sp.style.setProperty("--x", (Math.random()*120 - 60) + "px");
-    sp.style.setProperty("--y", (-30 - Math.random()*70) + "px");
+    sp.style.setProperty("--x", (Math.random() * 120 - 60) + "px");
+    sp.style.setProperty("--y", (-30 - Math.random() * 70) + "px");
     document.body.appendChild(sp);
     setTimeout(() => sp.remove(), 1000);
   });
 }
 
+/* ---------- chips ---------- */
 function buildChips(){
-  const c = document.getElementById("chips");
-  ["All","Not started","In progress","Done"].forEach(name => {
-    const b = document.createElement("button");
-    b.className = "chip" + (name === filter ? " active" : "");
-    b.textContent = name;
-    b.onclick = () => {
-      filter = name;
-      c.querySelectorAll(".chip").forEach(x => x.classList.toggle("active", x === b));
-      render();
-    };
-    c.appendChild(b);
+  const sBox = document.getElementById("statusChips");
+  ["To do", "Done", "All"].forEach(name => {
+    const b = el("button", "chip", name); b.dataset.kind = "status"; b.dataset.val = name;
+    b.onclick = () => { statusFilter = name; syncChips(); renderList(); };
+    sBox.appendChild(b);
+  });
+  const cBox = document.getElementById("courseChips");
+  ["All"].concat(COURSE_ORDER).forEach(name => {
+    const b = el("button", "chip", name === "All" ? "All courses" : name); b.dataset.kind = "course"; b.dataset.val = name;
+    b.onclick = () => { courseFilter = name; syncChips(); renderGrades(); renderList(); };
+    cBox.appendChild(b);
+  });
+  syncChips();
+}
+function syncChips(){
+  document.querySelectorAll(".chip").forEach(b => {
+    const cur = b.dataset.kind === "status" ? statusFilter : courseFilter;
+    b.classList.toggle("active", b.dataset.val === cur);
   });
 }
 
+/* ---------- start ---------- */
 async function load(){
   const note = document.getElementById("note");
-  if (!SHEET_CSV_URL) {
-    rows = SAMPLE;
-    note.textContent = "Showing sample data. Add your published Sheet link in index.html to see your own.";
-  } else {
+  note.textContent = "Tracker snapshot from " + SNAPSHOT_DATE + " · checkmarks you make here are saved on this device only";
+  if (SHEET_CSV_URL) {
     try {
       const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
       if (!res.ok) throw new Error(res.status);
-      rows = fromCSV(await res.text());
-      note.textContent = "Synced from Google Sheets · checkmarks here are saved on this device only";
+      const live = fromCSV(await res.text());
+      if (!live.length) throw new Error("empty");
+      rows = live;
+      note.textContent = "Synced from Google Sheets · checkmarks you make here are saved on this device only";
     } catch (err) {
-      rows = SAMPLE;
-      note.textContent = "Couldn't load your Sheet, so sample data is showing. Check that the link is a published CSV link.";
+      note.textContent = "Couldn't reach your Sheet, so the saved snapshot from " + SNAPSHOT_DATE + " is showing.";
     }
   }
-  render();
+  renderAll();
 }
 
 document.getElementById("today").textContent =
   new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
-document.getElementById("search").addEventListener("input", render);
-document.getElementById("sort").addEventListener("change", render);
+document.getElementById("search").addEventListener("input", renderList);
+document.getElementById("sort").addEventListener("change", renderList);
 buildChips();
 load();
 </script>
