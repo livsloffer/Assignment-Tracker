@@ -176,7 +176,7 @@
    To make it update automatically when you edit your Google Sheet:
    Google Sheets → File → Share → Publish to web → pick the "Assignments" tab →
    change "Web page" to "Comma-separated values (.csv)" → Publish → paste the link here. */
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS-pz-6lcIe7CVET7Qzv1OLBaUAbPY_7UJ3f8UFnJGHcVkHme7zOGAn6_f9tdS9_6YB9chbdWzmYRan/pubhtml";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS-pz-6lcIe7CVET7Qzv1OLBaUAbPY_7UJ3f8UFnJGHcVkHme7zOGAn6_f9tdS9_6YB9chbdWzmYRan/pub?gid=76593174&single=true&output=csv";
 /* ============================================= */
 
 const SNAPSHOT_DATE = "Oct 9, 2026";
@@ -263,16 +263,16 @@ function parseCSV(text){
 }
 function fromCSV(text){
   const data = parseCSV(text);
-  if (data.length < 2) return [];
-  const head = data[0].map(h => h.trim().toLowerCase());
+  const h = data.findIndex(r => r.some(c => /assignment/i.test(c)) && r.some(c => /due/i.test(c)));
+  if (h < 0) throw new Error('wrong tab: no "Assignment" and "Due Date" headers found; the first row starts with "' + (data[0] || []).filter(Boolean).slice(0, 3).join(" | ") + '"');
+  const head = data[h].map(x => x.trim().toLowerCase());
   const idx = (...keys) => head.findIndex(h => keys.some(k => h.includes(k)));
   const iName = idx("assignment"), iCourse = idx("course"), iDue = idx("due date"),
         iSched = idx("scheduled"), iSub = idx("submitted"),
         iEarn = idx("points earned"), iPoss = idx("points possible");
-  if (iName < 0 || iDue < 0) throw new Error("columns");
   const num = v => { const n = parseFloat(v); return isNaN(n) ? null : n; };
   const iso = v => { const d = parseDate((v || "").trim()); return d ? toISO(d) : ""; };
-  return data.slice(1).map(r => ({
+  return data.slice(h + 1).map(r => ({
     name: (r[iName] || "").trim(),
     course: iCourse >= 0 ? (r[iCourse] || "").trim() : "",
     due: iso(r[iDue]),
@@ -454,14 +454,16 @@ async function load(){
   note.textContent = "Tracker snapshot from " + SNAPSHOT_DATE + " · checkmarks you make here are saved on this device only";
   if (SHEET_CSV_URL) {
     try {
-      const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+      const res = await fetch(SHEET_CSV_URL + (SHEET_CSV_URL.includes("?") ? "&" : "?") + "t=" + Date.now());
       if (!res.ok) throw new Error(res.status);
-      const live = fromCSV(await res.text());
+      const txt = await res.text();
+      if (/^\s*</.test(txt)) throw new Error("got a web page instead of CSV data; republish as CSV");
+      const live = fromCSV(txt);
       if (!live.length) throw new Error("empty");
       rows = live;
       note.textContent = "Synced from Google Sheets · checkmarks you make here are saved on this device only";
     } catch (err) {
-      note.textContent = "Couldn't reach your Sheet, so the saved snapshot from " + SNAPSHOT_DATE + " is showing.";
+      note.textContent = "Couldn't load your Sheet (" + ((err && err.message) || err) + "), so the saved snapshot from " + SNAPSHOT_DATE + " is showing.";
     }
   }
   renderAll();
