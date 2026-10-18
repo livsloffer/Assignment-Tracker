@@ -171,12 +171,11 @@
 </div>
 
 <script>
-/* ============ OPTIONAL: LIVE SYNC ============
-   The page already contains a copy of your tracker (below), so it works as-is.
-   To make it update automatically when you edit your Google Sheet:
-   Google Sheets → File → Share → Publish to web → pick the "Assignments" tab →
-   change "Web page" to "Comma-separated values (.csv)" → Publish → paste the link here. */
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS-pz-6lcIe7CVET7Qzv1OLBaUAbPY_7UJ3f8UFnJGHcVkHme7zOGAn6_f9tdS9_6YB9chbdWzmYRan/pub?gid=76593174&single=true&output=csv";
+/* ============ LIVE DATA FROM assignments.csv ============
+   The page reads assignments.csv from this same folder every time it loads.
+   To update the site: replace assignments.csv in the repo with a fresh export of your Assignments tab
+   (Google Sheets → File → Download → Comma-separated values). A saved copy below is the fallback. */
+const SHEET_CSV_URL = "assignments.csv";
 /* ============================================= */
 
 const SNAPSHOT_DATE = "Oct 9, 2026";
@@ -461,9 +460,9 @@ async function load(){
       const live = fromCSV(txt);
       if (!live.length) throw new Error("empty");
       rows = live;
-      note.textContent = "Synced from Google Sheets · checkmarks you make here are saved on this device only";
+      note.textContent = "Updated from assignments.csv · checkmarks you make here are saved on this device only";
     } catch (err) {
-      note.textContent = "Couldn't load your Sheet (" + ((err && err.message) || err) + "), so the saved snapshot from " + SNAPSHOT_DATE + " is showing.";
+      note.textContent = "Couldn't load assignments.csv (" + ((err && err.message) || err) + "), so the saved snapshot from " + SNAPSHOT_DATE + " is showing.";
     }
   }
   renderAll();
